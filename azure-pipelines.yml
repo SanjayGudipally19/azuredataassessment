@@ -25,9 +25,9 @@ stages:
       inputs:
         deploymentScope: 'Resource Group'
         azureResourceManagerConnection: 'adf-cnn'
-        subscriptionId: 'ed1dac6a-b8f5-427b-a1c7-b695e618f891'
+        subscriptionId: '1ece207b-8fc4-43ae-8ad1-c916acb33beb'
         action: 'Create Or Update Resource Group'
-        resourceGroupName: 'batch10439rg'
+        resourceGroupName: 'myrg'
         location: 'centralindia'
         templateLocation: 'Linked artifact'
         csmFile: 'ARMTemplateForFactory.json'
@@ -57,9 +57,9 @@ stages:
             inputs:
               deploymentScope: 'Resource Group'
               azureResourceManagerConnection: 'adf-cnn'
-              subscriptionId: 'ed1dac6a-b8f5-427b-a1c7-b695e618f891'
+              subscriptionId: '1ece207b-8fc4-43ae-8ad1-c916acb33beb'
               action: 'Create Or Update Resource Group'
-              resourceGroupName: 'batch10439rg'
+              resourceGroupName: 'myrg'
               location: 'centralindia'
               templateLocation: 'Linked artifact'
               csmFile: 'ARMTemplateForFactory.json'
