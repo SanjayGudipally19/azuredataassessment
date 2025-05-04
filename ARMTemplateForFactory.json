@@ -5,11 +5,27 @@
         "factoryName": {
             "type": "string",
             "metadata": "Data Factory name",
-            "defaultValue": "batch01439DF"
+            "defaultValue": "sanjaysinstance"
         },
-        "AzureBlobStorage1_connectionString": {
+        "SqlServer1_password": {
             "type": "secureString",
-            "metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+            "metadata": "Secure string for 'password' of 'SqlServer1'"
+        },
+        "sanjaykey1_connectionString": {
+            "type": "secureString",
+            "metadata": "Secure string for 'connectionString' of 'sanjaykey1'"
+        },
+        "SqlServer1_properties_typeProperties_server": {
+            "type": "string",
+            "defaultValue": "sanjaysserver.database.windows.net"
+        },
+        "SqlServer1_properties_typeProperties_database": {
+            "type": "string",
+            "defaultValue": "sanjaysdb"
+        },
+        "SqlServer1_properties_typeProperties_userName": {
+            "type": "string",
+            "defaultValue": "testuser"
         }
     },
     "variables": {
@@ -17,14 +33,166 @@
     },
     "resources": [
         {
-            "name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
+            "name": "[concat(parameters('factoryName'), '/pipeline1')]",
+            "type": "Microsoft.DataFactory/factories/pipelines",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "activities": [
+                    {
+                        "name": "Copy data1",
+                        "type": "Copy",
+                        "dependsOn": [],
+                        "policy": {
+                            "timeout": "0.12:00:00",
+                            "retry": 0,
+                            "retryIntervalInSeconds": 30,
+                            "secureOutput": false,
+                            "secureInput": false
+                        },
+                        "userProperties": [],
+                        "typeProperties": {
+                            "source": {
+                                "type": "JsonSource",
+                                "storeSettings": {
+                                    "type": "AzureBlobStorageReadSettings",
+                                    "recursive": true,
+                                    "enablePartitionDiscovery": false
+                                },
+                                "formatSettings": {
+                                    "type": "JsonReadSettings"
+                                }
+                            },
+                            "sink": {
+                                "type": "JsonSink",
+                                "storeSettings": {
+                                    "type": "AzureBlobStorageWriteSettings"
+                                },
+                                "formatSettings": {
+                                    "type": "JsonWriteSettings"
+                                }
+                            },
+                            "enableStaging": false
+                        },
+                        "inputs": [
+                            {
+                                "referenceName": "Json1",
+                                "type": "DatasetReference",
+                                "parameters": {}
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "referenceName": "Json1",
+                                "type": "DatasetReference",
+                                "parameters": {}
+                            }
+                        ]
+                    }
+                ],
+                "policy": {
+                    "elapsedTimeMetric": {}
+                },
+                "annotations": []
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/datasets/Json1')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/Json1')]",
+            "type": "Microsoft.DataFactory/factories/datasets",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "linkedServiceName": {
+                    "referenceName": "sanjaykey1",
+                    "type": "LinkedServiceReference"
+                },
+                "annotations": [],
+                "type": "Json",
+                "typeProperties": {
+                    "location": {
+                        "type": "AzureBlobStorageLocation",
+                        "fileName": "jsonsample1.json",
+                        "container": "databricksdemo"
+                    }
+                },
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "model": {
+                            "type": "string"
+                        },
+                        "mpg": {
+                            "type": "number"
+                        },
+                        "cyl": {
+                            "type": "integer"
+                        },
+                        "disp": {
+                            "type": "number"
+                        },
+                        "hp": {
+                            "type": "integer"
+                        },
+                        "drat": {
+                            "type": "number"
+                        },
+                        "wt": {
+                            "type": "number"
+                        },
+                        "qsec": {
+                            "type": "number"
+                        },
+                        "vs": {
+                            "type": "integer"
+                        },
+                        "am": {
+                            "type": "integer"
+                        },
+                        "gear": {
+                            "type": "integer"
+                        },
+                        "carb": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/linkedServices/sanjaykey1')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/SqlServer1')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "SqlServer",
+                "typeProperties": {
+                    "server": "[parameters('SqlServer1_properties_typeProperties_server')]",
+                    "database": "[parameters('SqlServer1_properties_typeProperties_database')]",
+                    "encrypt": "mandatory",
+                    "trustServerCertificate": false,
+                    "authenticationType": "SQL",
+                    "userName": "[parameters('SqlServer1_properties_typeProperties_userName')]",
+                    "password": {
+                        "type": "SecureString",
+                        "value": "[parameters('SqlServer1_password')]"
+                    }
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/sanjaykey1')]",
             "type": "Microsoft.DataFactory/factories/linkedServices",
             "apiVersion": "2018-06-01",
             "properties": {
                 "annotations": [],
                 "type": "AzureBlobStorage",
                 "typeProperties": {
-                    "connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+                    "connectionString": "[parameters('sanjaykey1_connectionString')]"
                 }
             },
             "dependsOn": []
